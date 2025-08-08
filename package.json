@@ -54,6 +54,7 @@
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
     "next-auth": "^4.24.5",
+    "@next-auth/prisma-adapter": "^1.0.7",
     "next-themes": "latest",
     "react": "^19",
     "react-day-picker": "latest",
