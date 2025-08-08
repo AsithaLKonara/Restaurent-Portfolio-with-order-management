@@ -1,0 +1,274 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String
+  phone         String?
+  role          UserRole @default(CUSTOMER)
+  joinDate      DateTime @default(now())
+  totalOrders   Int      @default(0)
+  totalSpent    Float    @default(0)
+  loyaltyPoints Int      @default(0)
+  tier          LoyaltyTier @default(BRONZE)
+  lastOrderDate DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  orders        Order[]
+  reservations  Reservation[]
+  reviews       Review[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String
+  phone       String
+  email       String
+  logo        String?
+  banner      String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Restaurant settings
+  vatPercentage    Float @default(15.0)
+  serviceCharge    Float @default(10.0)
+  deliveryFee      Float @default(0.0)
+  minOrderAmount   Float @default(0.0)
+  maxDeliveryDistance Float @default(10.0)
+
+  // Relations
+  menuItems    MenuItem[]
+  orders       Order[]
+  tables       Table[]
+  staff        Staff[]
+
+  @@map("restaurants")
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  userId       String
+  restaurantId String
+  role         StaffRole
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restaurantId])
+  @@map("staff")
+}
+
+model MenuItem {
+  id           String   @id @default(cuid())
+  restaurantId String
+  name         String
+  description  String?
+  price        Float
+  image        String?
+  category     String
+  isAvailable  Boolean  @default(true)
+  isVegetarian Boolean  @default(false)
+  isSpicy      Boolean  @default(false)
+  allergens    String[]
+  preparationTime Int    @default(15) // minutes
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems   OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Table {
+  id           String   @id @default(cuid())
+  restaurantId String
+  number       String
+  capacity     Int
+  isAvailable  Boolean  @default(true)
+  qrCode       String?  // QR code for table ordering
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orders       Order[]
+
+  @@unique([restaurantId, number])
+  @@map("tables")
+}
+
+model Order {
+  id                String        @id @default(cuid())
+  userId            String?
+  restaurantId      String
+  tableId           String?
+  orderType         OrderType
+  status            OrderStatus   @default(PENDING)
+  items             OrderItem[]
+  subtotal          Float
+  vatAmount         Float
+  serviceCharge     Float
+  deliveryFee       Float
+  total             Float
+  specialInstructions String?
+  tableNumber       String?
+  customerName      String?
+  customerPhone     String?
+  customerAddress   String?
+  paymentMethod     PaymentMethod
+  paymentStatus     PaymentStatus @default(PENDING)
+  paymentReference  String?
+  isPaid            Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  user              User?         @relation(fields: [userId], references: [id])
+  restaurant        Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  table             Table?        @relation(fields: [tableId], references: [id])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  menuItemId String
+  quantity   Int
+  price      Float
+  specialInstructions String?
+
+  // Relations
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
+}
+
+model Reservation {
+  id           String   @id @default(cuid())
+  userId       String
+  restaurantId String
+  tableId      String?
+  customerName String
+  customerPhone String
+  customerEmail String?
+  date         DateTime
+  time         String
+  partySize    Int
+  specialRequests String?
+  status       ReservationStatus @default(PENDING)
+  depositAmount Float?
+  depositPaid   Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  table        Table?   @relation(fields: [tableId], references: [id])
+
+  @@map("reservations")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  userId       String
+  restaurantId String
+  orderId      String?
+  rating       Int
+  comment      String?
+  isPublic     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+// Enums
+enum UserRole {
+  OWNER
+  MANAGER
+  WAITER
+  KITCHEN
+  CUSTOMER
+}
+
+enum StaffRole {
+  MANAGER
+  WAITER
+  KITCHEN
+  CASHIER
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  SERVED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  PAYHERE
+  LANKAQR
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
