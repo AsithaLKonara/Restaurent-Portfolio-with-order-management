@@ -193,12 +193,12 @@ export default function ReportsPage() {
 
         <TabsContent value="sales" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
                 <CardTitle>Revenue Trend</CardTitle>
                 <CardDescription>Daily revenue over the selected period</CardDescription>
-              </CardHeader>
-              <CardContent>
+            </CardHeader>
+            <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={salesData?.revenueByDay || []}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -280,9 +280,9 @@ export default function ReportsPage() {
                   {(!inventoryData?.lowStockItems || inventoryData.lowStockItems.length === 0) && (
                     <p className="text-muted-foreground text-center py-4">No low stock items</p>
                   )}
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardContent>
+          </Card>
           </div>
         </TabsContent>
 
@@ -313,12 +313,12 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
                 <CardTitle>Top Customers</CardTitle>
                 <CardDescription>Highest spending customers</CardDescription>
-              </CardHeader>
-              <CardContent>
+            </CardHeader>
+            <CardContent>
                 <div className="space-y-2">
                   {customerData?.topCustomers?.slice(0, 5).map((customer: any, index: number) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
@@ -328,12 +328,12 @@ export default function ReportsPage() {
                       </div>
                       <div className="text-right">
                         <div className="font-bold">{formatCurrency(customer.totalSpent)}</div>
-                      </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
           </div>
         </TabsContent>
 
@@ -392,7 +392,7 @@ export default function ReportsPage() {
                   <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                   <Line type="monotone" dataKey="projectedRevenue" stroke="#f97316" strokeWidth={2} />
                 </LineChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
