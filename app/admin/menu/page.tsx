@@ -60,13 +60,13 @@ export default function MenuManagementPage() {
   useEffect(() => {
     // Load mock menu items
     const mockItems: MenuItem[] = [
-      {
-        id: "1",
-        name: "Chicken Kottu Roti",
-        description: "Traditional stir-fried bread with chicken, vegetables, and aromatic spices",
-        price: 18.99,
-        image: "/placeholder.svg?height=200&width=300",
-        category: "Mains",
+  {
+    id: "1",
+    name: "Chicken Kottu Roti",
+    description: "Traditional stir-fried bread with chicken, vegetables, and aromatic spices",
+    price: 18.99,
+    image: "/placeholder.svg?height=200&width=300",
+    category: "Mains",
         isAvailable: true,
         isVegetarian: false,
         isSpicy: true,
@@ -75,14 +75,14 @@ export default function MenuManagementPage() {
         popularity: 95,
         cost: 8.50,
         profitMargin: 55.2
-      },
-      {
-        id: "2",
-        name: "Fish Curry",
-        description: "Fresh fish cooked in coconut milk with traditional Sri Lankan spices",
-        price: 22.99,
-        image: "/placeholder.svg?height=200&width=300",
-        category: "Mains",
+  },
+  {
+    id: "2",
+    name: "Fish Curry",
+    description: "Fresh fish cooked in coconut milk with traditional Sri Lankan spices",
+    price: 22.99,
+    image: "/placeholder.svg?height=200&width=300",
+    category: "Mains",
         isAvailable: true,
         isVegetarian: false,
         isSpicy: true,
@@ -91,14 +91,14 @@ export default function MenuManagementPage() {
         popularity: 88,
         cost: 12.00,
         profitMargin: 47.8
-      },
-      {
-        id: "3",
-        name: "Hoppers (Set of 3)",
-        description: "Traditional bowl-shaped pancakes made from fermented rice flour",
-        price: 12.99,
-        image: "/placeholder.svg?height=200&width=300",
-        category: "Starters",
+  },
+  {
+    id: "3",
+    name: "Hoppers (Set of 3)",
+    description: "Traditional bowl-shaped pancakes made from fermented rice flour",
+    price: 12.99,
+    image: "/placeholder.svg?height=200&width=300",
+    category: "Starters",
         isAvailable: true,
         isVegetarian: true,
         isSpicy: false,
@@ -165,8 +165,8 @@ export default function MenuManagementPage() {
     : menuItems.filter(item => item.category === selectedCategory)
 
   const handleAddItem = () => {
-    const newItem: MenuItem = {
-      id: Date.now().toString(),
+      const newItem: MenuItem = {
+        id: Date.now().toString(),
       ...formData,
       popularity: Math.floor(Math.random() * 100),
       profitMargin: ((formData.price - formData.cost) / formData.price) * 100
@@ -365,9 +365,9 @@ export default function MenuManagementPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="available"
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="available"
                       checked={formData.isAvailable}
                       onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isAvailable: checked }))}
                     />
@@ -392,14 +392,14 @@ export default function MenuManagementPage() {
                 </div>
               </div>
             </div>
-            <DialogFooter>
+              <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+                  Cancel
+                </Button>
               <Button onClick={handleAddItem}>
                 Add Item
               </Button>
-            </DialogFooter>
+              </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -428,10 +428,10 @@ export default function MenuManagementPage() {
         {filteredItems.map(item => (
           <Card key={item.id} className="overflow-hidden">
             <div className="relative h-48">
-              <Image
+                  <Image
                 src={item.image}
-                alt={item.name}
-                fill
+                    alt={item.name}
+                    fill
                 className="object-cover"
               />
               <div className="absolute top-2 right-2 flex space-x-1">
@@ -459,20 +459,20 @@ export default function MenuManagementPage() {
               </div>
               {!item.isAvailable && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <Badge variant="destructive">Unavailable</Badge>
+                      <Badge variant="destructive">Unavailable</Badge>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-lg">{item.name}</h3>
-                <div className="text-right">
+                      <h3 className="font-semibold text-lg">{item.name}</h3>
+                    <div className="text-right">
                   <div className="text-lg font-bold">LKR {item.price.toFixed(2)}</div>
                   <div className={`text-sm ${getProfitMarginColor(item.profitMargin)}`}>
                     {item.profitMargin.toFixed(1)}% margin
                   </div>
-                </div>
-              </div>
+                      </div>
+                    </div>
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                 {item.description}
               </p>
@@ -639,7 +639,7 @@ export default function MenuManagementPage() {
               </Button>
               <Button onClick={handleUpdateItem}>
                 Update Item
-              </Button>
+            </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
